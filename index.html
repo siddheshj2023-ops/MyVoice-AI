@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#081120" />
+  <title>MyVoice AI — Intelligent Voice Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><span>✦</span></div>
+        <div>
+          <strong>MyVoice</strong>
+          <span>AI Assistant</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-panel="overview"><span>⌂</span> Overview</button>
+        <button class="nav-item" data-panel="conversation"><span>◌</span> Conversation</button>
+        <button class="nav-item" data-panel="activity"><span>◒</span> Activity</button>
+        <button class="nav-item" data-panel="settings"><span>⚙</span> Settings</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-dot"></div>
+        <div>
+          <strong>Assistant online</strong>
+          <span>Voice engine ready</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">MYVOICE AI</p>
+          <h1>Good to see you, Siddhesh <span>👋</span></h1>
+          <p class="subtitle">Your voice-first workspace for search, commands and everyday productivity.</p>
+        </div>
+        <div class="top-actions">
+          <button id="clearBtn" class="icon-btn" title="Clear conversation">⌫</button>
+          <div class="profile">S</div>
+        </div>
+      </header>
+
+      <section class="hero-grid">
+        <div class="assistant-card" id="assistantCard">
+          <div class="assistant-glow glow-a"></div>
+          <div class="assistant-glow glow-b"></div>
+          <div class="orb-wrap" id="orbWrap">
+            <div class="orb-ring ring-1"></div>
+            <div class="orb-ring ring-2"></div>
+            <div class="orb">
+              <div class="orb-core"></div>
+              <div class="wave wave-a"></div>
+              <div class="wave wave-b"></div>
+              <div class="wave wave-c"></div>
+            </div>
+          </div>
+          <div class="assistant-copy">
+            <span class="mode-pill" id="statusPill">READY</span>
+            <h2 id="statusTitle">Ask MyVoice anything</h2>
+            <p id="statusText">Click the microphone and speak naturally. MyVoice can answer questions and trigger supported browser actions.</p>
+          </div>
+          <div class="voice-controls">
+            <button class="primary-btn" id="startButton"><span>🎙</span> Start Listening</button>
+            <button class="secondary-btn" id="stopButton"><span>■</span> Stop</button>
+          </div>
+        </div>
+
+        <div class="stats-column">
+          <div class="stat-card"><span>Voice commands</span><strong id="commandCount">0</strong><small>this session</small></div>
+          <div class="stat-card"><span>AI conversations</span><strong id="messageCount">0</strong><small>messages processed</small></div>
+          <div class="stat-card"><span>Success rate</span><strong id="successRate">100%</strong><small>local session</small></div>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <div class="panel conversation-panel" id="conversationPanel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">LIVE CONVERSATION</p>
+              <h3>Assistant session</h3>
+            </div>
+            <span class="live-badge"><i></i> Live</span>
+          </div>
+
+          <div class="conversation" id="conversation">
+            <div class="empty-state" id="emptyState">
+              <div class="empty-icon">✦</div>
+              <h4>Your conversation will appear here</h4>
+              <p>Try “What time is it?”, “Open YouTube”, or “Search artificial intelligence”.</p>
+            </div>
+          </div>
+
+          <div class="text-composer">
+            <input id="textInput" type="text" placeholder="Type a command or question…" autocomplete="off" />
+            <button id="sendButton" class="send-btn">Send ↗</button>
+          </div>
+        </div>
+
+        <div class="panel commands-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">QUICK ACTIONS</p>
+              <h3>Try a command</h3>
+            </div>
+          </div>
+          <div class="command-grid">
+            <button class="command-btn" data-command="What time is it?"><span>◷</span><strong>Current time</strong><small>Get the local time</small></button>
+            <button class="command-btn" data-command="What's today's date?"><span>▣</span><strong>Today's date</strong><small>Read today's date</small></button>
+            <button class="command-btn" data-command="Open YouTube"><span>▶</span><strong>Open YouTube</strong><small>Launch YouTube</small></button>
+            <button class="command-btn" data-command="Open Google"><span>⌕</span><strong>Open Google</strong><small>Launch search</small></button>
+            <button class="command-btn" data-command="Open ChatGPT"><span>✦</span><strong>Open ChatGPT</strong><small>Launch assistant</small></button>
+            <button class="command-btn" data-command="Search latest AI tools"><span>↗</span><strong>Search web</strong><small>Run a Google search</small></button>
+          </div>
+
+          <div class="command-tip">
+            <span>💡</span>
+            <div><strong>Pro tip</strong><p>You can speak naturally. Try: “Search React interview questions”.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel activity-panel" id="activityPanel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">ACTIVITY</p>
+            <h3>Recent assistant actions</h3>
+          </div>
+        </div>
+        <div id="activityList" class="activity-list">
+          <div class="activity-empty">No activity yet.</div>
+        </div>
+      </section>
+
+      <section class="panel settings-panel hidden" id="settingsPanel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">PREFERENCES</p>
+            <h3>Assistant settings</h3>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <label class="setting-row"><span><strong>Auto speak responses</strong><small>Read assistant responses aloud automatically.</small></span><input id="autoSpeak" type="checkbox" checked /></label>
+          <label class="setting-row"><span><strong>Voice language</strong><small>Browser speech recognition language.</small></span><select id="languageSelect"><option value="en-US">English (US)</option><option value="en-IN">English (India)</option><option value="en-GB">English (UK)</option></select></label>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
