@@ -1,6 +1,6 @@
 console.log("MYVOICE AI DASHBOARD LOADED");
 
-const API = "http://127.0.0.1:3000";
+const API = "https://myvoice-ai-backend.onrender.com";
 
 const startButton = document.getElementById("startButton");
 const stopButton = document.getElementById("stopButton");
