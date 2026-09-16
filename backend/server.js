@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -249,11 +249,11 @@ app.use((req, res) => {
     });
 });
 
-app.listen(PORT, "127.0.0.1", () => {
+app.listen(PORT, "0.0.0.0", function () {
     console.log("=================================");
     console.log("      MYVOICE AI BACKEND");
     console.log("=================================");
-    console.log(`Server: http://127.0.0.1:${PORT}`);
-    console.log(`Health: http://127.0.0.1:${PORT}/health`);
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Health endpoint: /health`);
     console.log("=================================");
 });
