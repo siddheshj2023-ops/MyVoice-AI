@@ -9,7 +9,6 @@ const clearButton = document.getElementById("clearBtn");
 
 const textInput = document.getElementById("textInput");
 const conversation = document.getElementById("conversation");
-const emptyState = document.getElementById("emptyState");
 
 const statusPill = document.getElementById("statusPill");
 const statusTitle = document.getElementById("statusTitle");
@@ -27,22 +26,13 @@ const languageSelect = document.getElementById("languageSelect");
 let recognition = null;
 let busy = false;
 
-let commands = Number(
-  localStorage.getItem("myvoice_commands") || 0
-);
+let commands = Number(localStorage.getItem("myvoice_commands") || 0);
+let messages = Number(localStorage.getItem("myvoice_messages") || 0);
+let successes = Number(localStorage.getItem("myvoice_successes") || 0);
 
-let messages = Number(
-  localStorage.getItem("myvoice_messages") || 0
-);
-
-let successes = Number(
-  localStorage.getItem("myvoice_successes") || 0
-);
-
-
-// ============================================================
+// ======================================================
 // STATS
-// ============================================================
+// ======================================================
 
 function syncStats() {
   if (commandCount) {
@@ -60,26 +50,14 @@ function syncStats() {
     successRate.textContent = `${percentage}%`;
   }
 
-  localStorage.setItem(
-    "myvoice_commands",
-    String(commands)
-  );
-
-  localStorage.setItem(
-    "myvoice_messages",
-    String(messages)
-  );
-
-  localStorage.setItem(
-    "myvoice_successes",
-    String(successes)
-  );
+  localStorage.setItem("myvoice_commands", String(commands));
+  localStorage.setItem("myvoice_messages", String(messages));
+  localStorage.setItem("myvoice_successes", String(successes));
 }
 
-
-// ============================================================
+// ======================================================
 // STATE
-// ============================================================
+// ======================================================
 
 function setState(state, title, copy) {
   document.body.classList.remove(
@@ -94,9 +72,7 @@ function setState(state, title, copy) {
 
   if (statusPill) {
     statusPill.textContent =
-      state === "ready"
-        ? "READY"
-        : state.toUpperCase();
+      state === "ready" ? "READY" : state.toUpperCase();
   }
 
   if (statusTitle) {
@@ -108,10 +84,9 @@ function setState(state, title, copy) {
   }
 }
 
-
-// ============================================================
-// CHAT BUBBLE
-// ============================================================
+// ======================================================
+// CHAT
+// ======================================================
 
 function addBubble(kind, text) {
   if (!conversation) {
@@ -130,10 +105,7 @@ function addBubble(kind, text) {
 
   const avatar = document.createElement("div");
   avatar.className = "avatar";
-  avatar.textContent =
-    kind === "user"
-      ? "You"
-      : "✦";
+  avatar.textContent = kind === "user" ? "You" : "✦";
 
   const body = document.createElement("div");
   body.className = "text";
@@ -141,26 +113,22 @@ function addBubble(kind, text) {
 
   const meta = document.createElement("div");
   meta.className = "meta";
-
-  meta.textContent =
-    new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+  meta.textContent = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
   body.appendChild(meta);
   wrap.appendChild(avatar);
   wrap.appendChild(body);
 
   conversation.appendChild(wrap);
-  conversation.scrollTop =
-    conversation.scrollHeight;
+  conversation.scrollTop = conversation.scrollHeight;
 }
 
-
-// ============================================================
+// ======================================================
 // ACTIVITY
-// ============================================================
+// ======================================================
 
 function addActivity(text) {
   if (!activityList) {
@@ -174,24 +142,17 @@ function addActivity(text) {
     activityList.innerHTML = "";
   }
 
-  const item =
-    document.createElement("div");
-
+  const item = document.createElement("div");
   item.className = "activity-item";
 
-  const strong =
-    document.createElement("strong");
-
+  const strong = document.createElement("strong");
   strong.textContent = text;
 
-  const span =
-    document.createElement("span");
-
-  span.textContent =
-    new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+  const span = document.createElement("span");
+  span.textContent = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
   item.appendChild(strong);
   item.appendChild(span);
@@ -199,18 +160,15 @@ function addActivity(text) {
   activityList.prepend(item);
 
   while (activityList.children.length > 8) {
-    const last = activityList.lastElementChild;
-
-    if (last) {
-      last.remove();
+    if (activityList.lastElementChild) {
+      activityList.lastElementChild.remove();
     }
   }
 }
 
-
-// ============================================================
+// ======================================================
 // BROWSER ACTIONS
-// ============================================================
+// ======================================================
 
 function executeBrowserAction(reply) {
   if (!reply) {
@@ -218,42 +176,23 @@ function executeBrowserAction(reply) {
   }
 
   if (reply === "OPEN_GOOGLE") {
-    window.open(
-      "https://www.google.com",
-      "_blank",
-      "noopener,noreferrer"
-    );
-
+    window.location.href = "https://www.google.com";
     return true;
   }
 
   if (reply === "OPEN_YOUTUBE") {
-    window.open(
-      "https://www.youtube.com",
-      "_blank",
-      "noopener,noreferrer"
-    );
-
+    window.location.href = "https://www.youtube.com";
     return true;
   }
 
   if (reply === "OPEN_CHATGPT") {
-    window.open(
-      "https://chatgpt.com",
-      "_blank",
-      "noopener,noreferrer"
-    );
-
+    window.location.href = "https://chatgpt.com";
     return true;
   }
 
   if (reply === "OPEN_WEATHER") {
-    window.open(
-      "https://www.google.com/search?q=weather",
-      "_blank",
-      "noopener,noreferrer"
-    );
-
+    window.location.href =
+      "https://www.google.com/search?q=weather";
     return true;
   }
 
@@ -263,12 +202,9 @@ function executeBrowserAction(reply) {
       .trim();
 
     if (query) {
-      window.open(
+      window.location.href =
         "https://www.google.com/search?q=" +
-          encodeURIComponent(query),
-        "_blank",
-        "noopener,noreferrer"
-      );
+        encodeURIComponent(query);
     }
 
     return true;
@@ -277,10 +213,9 @@ function executeBrowserAction(reply) {
   return false;
 }
 
-
-// ============================================================
+// ======================================================
 // TEXT TO SPEECH
-// ============================================================
+// ======================================================
 
 function speak(text) {
   if (
@@ -296,10 +231,9 @@ function speak(text) {
   const speech =
     new SpeechSynthesisUtterance(text);
 
-  speech.lang =
-    languageSelect
-      ? languageSelect.value
-      : "en-US";
+  speech.lang = languageSelect
+    ? languageSelect.value
+    : "en-US";
 
   speech.rate = 1;
   speech.pitch = 1;
@@ -308,7 +242,7 @@ function speak(text) {
     setState(
       "speaking",
       "MyVoice is speaking",
-      "Listen to the response, then ask another question."
+      "Listen to the response."
     );
   };
 
@@ -320,25 +254,15 @@ function speak(text) {
     );
   };
 
-  speech.onerror = function () {
-    setState(
-      "ready",
-      "Speech finished",
-      "Ready for your next command."
-    );
-  };
-
   window.speechSynthesis.speak(speech);
 }
 
-
-// ============================================================
+// ======================================================
 // SEND MESSAGE
-// ============================================================
+// ======================================================
 
 async function sendMessage(message) {
-  const text =
-    String(message || "").trim();
+  const text = String(message || "").trim();
 
   if (!text || busy) {
     return;
@@ -350,10 +274,7 @@ async function sendMessage(message) {
   messages += 1;
 
   addBubble("user", text);
-
-  addActivity(
-    `Command received: "${text}"`
-  );
+  addActivity(`Command received: "${text}"`);
 
   syncStats();
 
@@ -364,22 +285,15 @@ async function sendMessage(message) {
   );
 
   try {
-    const response =
-      await fetch(
-        `${API}/api/message`,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-            message: text
-          })
-        }
-      );
+    const response = await fetch(`${API}/api/message`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: text
+      })
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -387,14 +301,12 @@ async function sendMessage(message) {
       );
     }
 
-    const data =
-      await response.json();
+    const data = await response.json();
 
-    const reply =
-      String(
-        data.reply ||
-        "I could not generate a response."
-      );
+    const reply = String(
+      data.reply ||
+      "I could not generate a response."
+    );
 
     const actionExecuted =
       executeBrowserAction(reply);
@@ -402,78 +314,60 @@ async function sendMessage(message) {
     let displayReply = reply;
 
     if (reply === "OPEN_GOOGLE") {
-      displayReply =
-        "Opening Google for you.";
+      displayReply = "Opening Google for you.";
     }
 
     else if (reply === "OPEN_YOUTUBE") {
-      displayReply =
-        "Opening YouTube for you.";
+      displayReply = "Opening YouTube for you.";
     }
 
     else if (reply === "OPEN_CHATGPT") {
-      displayReply =
-        "Opening ChatGPT for you.";
+      displayReply = "Opening ChatGPT for you.";
     }
 
     else if (reply === "OPEN_WEATHER") {
-      displayReply =
-        "Opening weather for you.";
+      displayReply = "Opening weather for you.";
     }
 
     else if (
       reply.indexOf("SEARCH_GOOGLE:") === 0
     ) {
-      const query =
-        reply
-          .substring("SEARCH_GOOGLE:".length)
-          .trim();
+      const query = reply
+        .substring("SEARCH_GOOGLE:".length)
+        .trim();
 
       displayReply =
         `Searching Google for "${query}".`;
     }
 
-    addBubble(
-      "ai",
-      displayReply
-    );
+    addBubble("ai", displayReply);
 
     if (actionExecuted) {
       addActivity(
         `Action executed: ${displayReply}`
       );
-    }
-
-    else {
+    } else {
       addActivity(
         `Assistant replied: "${displayReply}"`
       );
     }
 
     successes += 1;
-
     syncStats();
 
     speak(displayReply);
 
-    if (
-      !autoSpeak ||
-      !autoSpeak.checked
-    ) {
+    if (!autoSpeak || !autoSpeak.checked) {
       setState(
         "ready",
         "Ask MyVoice anything",
-        "Response ready. Start another command."
+        "Response ready."
       );
     }
-
   }
 
   catch (error) {
-    console.error(
-      "MYVOICE ERROR:",
-      error
-    );
+    console.error("MYVOICE ERROR:", error);
 
     addBubble(
       "ai",
@@ -489,8 +383,6 @@ async function sendMessage(message) {
       "Connection issue",
       "Make sure the backend is running on port 3000."
     );
-
-    syncStats();
   }
 
   finally {
@@ -498,10 +390,9 @@ async function sendMessage(message) {
   }
 }
 
-
-// ============================================================
+// ======================================================
 // SPEECH RECOGNITION
-// ============================================================
+// ======================================================
 
 function setupRecognition() {
   const SpeechRecognition =
@@ -522,84 +413,75 @@ function setupRecognition() {
     return;
   }
 
-  recognition =
-    new SpeechRecognition();
+  recognition = new SpeechRecognition();
 
-  recognition.lang =
-    languageSelect
-      ? languageSelect.value
-      : "en-US";
+  recognition.lang = languageSelect
+    ? languageSelect.value
+    : "en-US";
 
   recognition.continuous = false;
   recognition.interimResults = false;
 
-  recognition.onstart =
-    function () {
-      setState(
-        "listening",
-        "Listening...",
-        "Speak clearly. I am waiting for your command."
-      );
-    };
+  recognition.onstart = function () {
+    setState(
+      "listening",
+      "Listening...",
+      "Speak clearly. I am waiting for your command."
+    );
+  };
 
-  recognition.onresult =
-    function (event) {
-      const result =
-        event.results[0];
+  recognition.onresult = function (event) {
+    const result = event.results[0];
 
-      if (!result) {
-        return;
-      }
+    if (!result) {
+      return;
+    }
 
-      const alternative =
-        result[0];
+    const alternative = result[0];
 
-      if (!alternative) {
-        return;
-      }
+    if (!alternative) {
+      return;
+    }
 
-      const text =
-        alternative.transcript.trim();
+    const text =
+      alternative.transcript.trim();
 
-      if (text) {
-        sendMessage(text);
-      }
-    };
+    if (text) {
+      sendMessage(text);
+    }
+  };
 
-  recognition.onerror =
-    function (event) {
-      console.error(
-        "Speech recognition error:",
-        event.error
-      );
+  recognition.onerror = function (event) {
+    console.error(
+      "Speech recognition error:",
+      event.error
+    );
 
-      addActivity(
-        `Speech recognition error: ${event.error}`
-      );
+    addActivity(
+      `Speech recognition error: ${event.error}`
+    );
 
+    setState(
+      "ready",
+      "Could not hear you",
+      `Speech recognition error: ${event.error}`
+    );
+  };
+
+  recognition.onend = function () {
+    if (!busy) {
       setState(
         "ready",
-        "Could not hear you",
-        `Speech recognition error: ${event.error}`
+        "Ask MyVoice anything",
+        "Click the microphone and speak naturally."
       );
-    };
-
-  recognition.onend =
-    function () {
-      if (!busy) {
-        setState(
-          "ready",
-          "Ask MyVoice anything",
-          "Click the microphone and speak naturally."
-        );
-      }
-    };
+    }
+  };
 }
 
-
-// ============================================================
-// MICROPHONE BUTTON
-// ============================================================
+// ======================================================
+// MICROPHONE
+// ======================================================
 
 if (startButton) {
   startButton.addEventListener(
@@ -615,9 +497,7 @@ if (startButton) {
 
       try {
         recognition.start();
-      }
-
-      catch (error) {
+      } catch (error) {
         console.warn(
           "Recognition could not start:",
           error
@@ -627,10 +507,9 @@ if (startButton) {
   );
 }
 
-
-// ============================================================
-// STOP BUTTON
-// ============================================================
+// ======================================================
+// STOP
+// ======================================================
 
 if (stopButton) {
   stopButton.addEventListener(
@@ -655,10 +534,9 @@ if (stopButton) {
   );
 }
 
-
-// ============================================================
+// ======================================================
 // SEND BUTTON
-// ============================================================
+// ======================================================
 
 if (sendButton) {
   sendButton.addEventListener(
@@ -668,8 +546,7 @@ if (sendButton) {
         return;
       }
 
-      const text =
-        textInput.value;
+      const text = textInput.value;
 
       textInput.value = "";
 
@@ -678,10 +555,9 @@ if (sendButton) {
   );
 }
 
-
-// ============================================================
+// ======================================================
 // ENTER KEY
-// ============================================================
+// ======================================================
 
 if (textInput) {
   textInput.addEventListener(
@@ -698,10 +574,9 @@ if (textInput) {
   );
 }
 
-
-// ============================================================
-// QUICK COMMAND BUTTONS
-// ============================================================
+// ======================================================
+// QUICK COMMANDS
+// ======================================================
 
 document
   .querySelectorAll(".command-btn")
@@ -709,18 +584,16 @@ document
     button.addEventListener(
       "click",
       function () {
-        const command =
-          button.dataset.command || "";
-
-        sendMessage(command);
+        sendMessage(
+          button.dataset.command || ""
+        );
       }
     );
   });
 
-
-// ============================================================
+// ======================================================
 // NAVIGATION
-// ============================================================
+// ======================================================
 
 document
   .querySelectorAll(".nav-item")
@@ -796,10 +669,9 @@ document
     );
   });
 
-
-// ============================================================
-// CLEAR BUTTON
-// ============================================================
+// ======================================================
+// CLEAR
+// ======================================================
 
 if (clearButton) {
   clearButton.addEventListener(
@@ -815,8 +687,7 @@ if (clearButton) {
               "Open YouTube",
               "Open ChatGPT",
               "Weather",
-              or
-              "Search artificial intelligence".
+              or "Search artificial intelligence".
             </p>
           </div>
         `;
@@ -833,16 +704,15 @@ if (clearButton) {
       setState(
         "ready",
         "Ask MyVoice anything",
-        "Conversation cleared. Ready for a fresh session."
+        "Conversation cleared."
       );
     }
   );
 }
 
-
-// ============================================================
-// LANGUAGE CHANGE
-// ============================================================
+// ======================================================
+// LANGUAGE
+// ======================================================
 
 if (languageSelect) {
   languageSelect.addEventListener(
@@ -856,10 +726,9 @@ if (languageSelect) {
   );
 }
 
-
-// ============================================================
-// INITIALIZATION
-// ============================================================
+// ======================================================
+// START
+// ======================================================
 
 syncStats();
 setupRecognition();
